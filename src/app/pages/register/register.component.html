@@ -1,0 +1,18 @@
+<div class="login-form-wrapper">
+  <label for="username">
+    Username
+    <input type="text" [(ngModel)]="userForm.username" id="username" name="username" />
+  </label>
+  <br>
+  <label for="password">
+    Password
+    <input type="password" [(ngModel)]="userForm.password" id="password" name="password" />
+  </label>
+  <br>
+  <button (click)="register()">Register</button>
+  <div>Have an account?</div>
+  <a routerLink="/login">Login</a>
+</div>
+<div class="error-message">
+  {{ error$ | async }}
+</div>

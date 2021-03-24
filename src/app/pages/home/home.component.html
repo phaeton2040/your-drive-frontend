@@ -1,0 +1,17 @@
+<p>Hello, {{(user$ | async)?.email}}. Here are files on your drive:</p>
+
+<div class="history">
+  <span *ngFor="let item of history$ | async; let i = index">
+    <a href="#" (click)="goBack($event, i)">{{item === '' ? 'root' : item}}</a>
+    <span>/</span>
+  </span>
+</div>
+
+<ul>
+  <li *ngFor="let item of items$ | async ">
+    <span *ngIf="item.type === 'file'">{{item.name}} - {{item.size}}</span>
+    <a href="#" (click)="next($event, item.name)" *ngIf="item.type === 'directory'">{{item.name}}</a>
+  </li>
+</ul>
+
+<button (click)="signOut()">Sign out</button>
