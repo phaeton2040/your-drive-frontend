@@ -4,11 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
     "test": "ng test",
     "test:ci": "ng test --no-watch",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "deploy:dev": "aws s3 sync dist/your-drive s3://your-drive-dev-frontend"
   },
   "private": true,
   "dependencies": {
