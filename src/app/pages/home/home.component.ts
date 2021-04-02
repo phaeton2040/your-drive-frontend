@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
     this.user$ = this.auth.user$;
     this.items$ = this.directory.items$;
     this.history$ = this.directory.history$;
-    this.directory.list('');
+    this.directory.list();
   }
 
   signOut(): void {
@@ -43,6 +43,16 @@ export class HomeComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
 
-    this.directory.list(directory);
+    this.directory.goForward(directory);
+  }
+
+  createDirectory(): void {
+    let directoryName = prompt('Enter directory name');
+
+    directoryName = directoryName.replace(/[^a-zA-Z0-9 ]/g, '');
+
+    if (directoryName) {
+      this.directory.create(directoryName);
+    }
   }
 }
