@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { DirectoryItemInterface } from '../interfaces/directory/directory-item.interface';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
-import { filter } from 'rxjs/operators';
+import { concatMap, filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,27 +34,47 @@ export class DirectoryService {
       });
   }
 
-  public list(directory: string): void {
-    const history = this.history.value;
-
-    history.push(directory);
-    this.history.next(history);
-
-    this.api.post<DirectoryItemInterface[]>('/list', { directory: this.prefix })
+  public list(): void {
+    this.api.post<DirectoryItemInterface[]>('/directory/list', { directory: this.path })
       .subscribe(result => {
         this.items.next(result);
       });
   }
 
-  private get prefix(): string {
+  public create(name: string): void {
+    this.api.post('/directory/create', {
+      directory: name,
+      path: this.path
+    }).pipe(
+      concatMap((res) => {
+        this.list();
+
+        return of(res);
+      })
+    ).subscribe();
+  }
+
+  public get current(): string {
+    return this.history.value[this.history.value.length - 1];
+  }
+
+  public get path(): string {
     return this.history.value.join('/');
   }
 
-  goBack(index: number): void {
+  public goForward(directory: string): void {
     const history = this.history.value;
-    const directory = history[index];
 
-    this.history.next(history.slice(0, index));
-    this.list(directory);
+    history.push(directory);
+
+    this.history.next(history);
+    this.list();
+  }
+
+  public goBack(index: number): void {
+    const history = this.history.value;
+
+    this.history.next(history.slice(0, index + 1));
+    this.list();
   }
 }
